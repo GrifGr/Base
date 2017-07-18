@@ -30,6 +30,7 @@ import javax.swing.event.MenuListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
@@ -193,8 +194,13 @@ public class Base extends JFrame {
 			resultSet = p.executeQuery();
 
 			tableModel.setData(resultSet);
-
+		
 			tableModel.fireTableStructureChanged();
+			
+			for (int i = 0; i < table.getColumnCount(); i++) {
+				TableColumn column = table.getColumnModel().getColumn(i);
+				column.setPreferredWidth(tableModel.getColumnSize(i) + 10);
+			}
 
 			prop.setListFile(FileBase.getAbsolutePath());
 		} catch (Exception ex) {

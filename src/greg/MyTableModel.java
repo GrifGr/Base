@@ -12,35 +12,22 @@ import java.util.GregorianCalendar;
 import javax.swing.table.AbstractTableModel;
 
 public class MyTableModel extends AbstractTableModel {
-	//private String[] columnNames = null;
-	//private Object[][] data = null;
-
 	private ArrayList<String> columnNames = null;
 	private ArrayList<ArrayList<Object>> data = null;
+	private ArrayList<Integer> size = null;
 	
 	public MyTableModel() {
 		columnNames = new ArrayList<String>();
 		data = new ArrayList<ArrayList<Object>>();
-		//this.columnNames = new String[0];
-		// this.names = new Vector<String>();
-		// this.rows = new Vector<Vector<Object>>();
 	}
 
 	@Override
 	public int getRowCount() {
-//		int romsize = 0;
-//		try {
-//			romsize = data.size();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-
 		return data.size();
 	}
 
 	@Override
 	public int getColumnCount() {
-		// TODO Auto-generated method stub
 		return columnNames.size();
 	}
 
@@ -48,7 +35,10 @@ public class MyTableModel extends AbstractTableModel {
 		return columnNames.get(col);
 	}
 
-
+	public int getColumnSize(int col) {
+		return size.get(col);
+	}
+	
 	public void setData(ResultSet rs) {	
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		SimpleDateFormat sdfdbf = new SimpleDateFormat("yyyy-MM-dd");
@@ -58,14 +48,12 @@ public class MyTableModel extends AbstractTableModel {
 			int columnCount = rsMetaData.getColumnCount();
 
 			columnNames = new ArrayList<String>();
-
+			size = new ArrayList<Integer>();
+			
 			for (int i = 1; i <= columnCount; i++) {
 				columnNames.add(rsMetaData.getColumnName(i));
+				size.add(rsMetaData.getPrecision(i)*6);
 			}
-			
-//			rs.last();
-//			int countRows = rs.getRow();
-//			rs.first();
 			
 			data = new ArrayList<ArrayList<Object>>();
 			
@@ -138,4 +126,11 @@ public class MyTableModel extends AbstractTableModel {
 		return data.get(rowIndex).get(columnIndex);
 	}
 
+	public Class<?> getColumnClass(int col) {
+		try {
+			return getValueAt(0, col).getClass();
+		} catch (Exception e) {
+			return String.class;
+		}
+	}
 }
