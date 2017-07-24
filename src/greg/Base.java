@@ -1,8 +1,8 @@
 package greg;
 
-import java.awt.Component;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Insets;
+import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,17 +11,16 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
@@ -29,9 +28,6 @@ import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
 public class Base extends JFrame {
@@ -42,6 +38,7 @@ public class Base extends JFrame {
 	private MyTableModel tableModel = null;
 	private PropertyReader prop = new PropertyReader();
 	private JMenu fileMenu = null;
+	private JButton btnAddFilter = null;
 			
 	public Base(String path) {
 		// JFrame frame = new JFrame("DBF");
@@ -55,7 +52,18 @@ public class Base extends JFrame {
 		setLocation((screenSize.width - getWidth()) / 2, (screenSize.height - getHeight()) / 3);
 
 		setJMenuBar(addMenuBar());
-
+		btnAddFilter = new JButton("F");
+		btnAddFilter.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				addFilter();
+			}
+		});
+    	
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		buttonPanel.add(btnAddFilter);
+		
+		add(buttonPanel,BorderLayout.NORTH);
 		tableModel = new MyTableModel();
 
 		table = new JTable(tableModel);
@@ -155,6 +163,11 @@ public class Base extends JFrame {
 		});
 	}
 	
+
+	private void addFilter() {
+		FilterForm filter = new FilterForm(tableModel);
+		filter.setVisible(true);
+	}
 	
 	public static void main(final String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
